@@ -1,3 +1,4 @@
+using System;
 using Api.CrossCutting.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 
 namespace application
 {
@@ -26,6 +28,28 @@ namespace application
             ConfigureRepository.ConfigureDependenciesRepository(services);
 
             services.AddControllers();
+            services.AddSwaggerGen(x => 
+            {
+                x.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version="v1",
+                    Title = "API Course",
+                    Description = "DDD Architecture",
+                    TermsOfService = new Uri("http://www.google.com"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Rafael Silvério",
+                        Email = "emailteste@gmail.com",
+                        Url = new Uri("http://www.google.com")
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "Terms of use",
+                        Url = new Uri("http://www.google.com")
+                    }
+                }
+                );
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,6 +59,13 @@ namespace application
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(x => 
+            {
+                x.SwaggerEndpoint("/swagger/v1/swagger.json", "API Course");
+                x.RoutePrefix = string.Empty;
+            });
 
             app.UseRouting();
 
