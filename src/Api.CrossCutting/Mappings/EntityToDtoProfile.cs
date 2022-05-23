@@ -11,10 +11,10 @@ namespace Api.CrossCutting.Mappings
             CreateMap<UserDto, UserEntity>()
                 .ReverseMap();
 
-            CreateMap<UseDtoCreateResult, UserEntity>()
+            CreateMap<UserDtoCreateResult, UserEntity>()
                 .ReverseMap();
             
-            CreateMap<UseDtoUpdateResult, UserEntity>()
+            CreateMap<UserDtoUpdateResult, UserEntity>()
                 .ReverseMap();
         }
     }

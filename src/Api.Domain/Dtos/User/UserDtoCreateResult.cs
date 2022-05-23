@@ -2,7 +2,7 @@ using System;
 
 namespace Api.Domain.Dtos.User
 {
-    public class UseDtoCreateResult
+    public class UserDtoCreateResult
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
