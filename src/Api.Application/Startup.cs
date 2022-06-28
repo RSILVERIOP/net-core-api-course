@@ -21,16 +21,28 @@ namespace application
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            _environment = environment;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment _environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            if (_environment.IsEnvironment("Testing"))
+            {
+                Environment.SetEnvironmentVariable("DB_CONNECTION", "Server=localhost;Port=5003;Database=dbAPI_Integration;Uid=sa;Pwd=S@geBr.2014");
+                Environment.SetEnvironmentVariable("DATABASE", "MYSQL");
+                Environment.SetEnvironmentVariable("MIGRATION", "APPLY");
+                Environment.SetEnvironmentVariable("Audience", "AudienceExample");
+                Environment.SetEnvironmentVariable("Issuer", "IssuerExample");
+                Environment.SetEnvironmentVariable("Seconds", "120");
+            }
+
             ConfigureService.ConfigureDependenciesService(services);
             ConfigureRepository.ConfigureDependenciesRepository(services);
 
@@ -46,18 +58,7 @@ namespace application
 
             var signingConfigurations = new SigningConfigurations(); 
             services.AddSingleton(signingConfigurations);
-
-            var tokenConfigurations = new TokenConfigurations();
-            
-            //Not Working
-            //new ConfigureFromConfigurationOptions<TokenConfigurations>(
-            //    Configuration.GetSection("TokenConfigurations"))
-            //        .Configure(tokenConfigurations);
-            tokenConfigurations.Audience = "AudienceExample";
-            tokenConfigurations.Issuer = "IssuerExample";
-            tokenConfigurations.Seconds = 120;
-
-            services.AddSingleton(tokenConfigurations);          
+     
 
             services.AddAuthentication(authOptions =>
             {
@@ -67,8 +68,8 @@ namespace application
             {
                 var paramsValidation = bearerOptions.TokenValidationParameters;
                 paramsValidation.IssuerSigningKey = signingConfigurations.Key;
-                paramsValidation.ValidAudience = tokenConfigurations.Audience;
-                paramsValidation.ValidIssuer = tokenConfigurations.Issuer;
+                paramsValidation.ValidAudience = Environment.GetEnvironmentVariable("Audience");
+                paramsValidation.ValidIssuer = Environment.GetEnvironmentVariable("Issuer");
                 paramsValidation.ValidateIssuerSigningKey = true;
                 paramsValidation.ValidateLifetime = true;
                 paramsValidation.ClockSkew = TimeSpan.Zero;

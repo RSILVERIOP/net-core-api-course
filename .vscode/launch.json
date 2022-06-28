@@ -21,7 +21,10 @@
                 "ASPNETCORE_ENVIRONMENT": "Development",
                 "DB_CONNECTION" : "Server=localhost;Port=5003;Database=dbAPI;Uid=sa;Pwd=S@geBr.2014",
                 "DATABASE" : "MYSQL",
-                "MIGRATION": "APPLY"
+                "MIGRATION": "APPLY",
+                "Audience": "AudienceExample",
+                "Issuer": "IssuerExample",
+                "Seconds": "120"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
